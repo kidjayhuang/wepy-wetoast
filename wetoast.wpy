@@ -1,0 +1,160 @@
+<template>
+  	<view class="wetoast {{__reveal ? 'wetoast_show' : ''}}">
+		<view class="wetoast__mask"></view>
+		<view class="wetoast__bd" animation="{{__animationData}}">
+			<block wx:if="{{__wetoast.img}}">
+				<view class="wetoast__bd__img {{__wetoast.imgClassName || ''}}">
+					<image class="wetoast__bd__img_desc" src="{{__wetoast.img}}" mode="{{__wetoast.imgMode || 'scaleToFill'}}"></image>
+				</view>
+			</block>
+			<block wx:if="{{__wetoast.title}}">
+				<view class="wetoast__bd__title {{__wetoast.titleClassName || ''}}">{{__wetoast.title}}</view>
+			</block>
+		</view>
+	</view>
+</template>
+
+<style lang="less">
+/**toast.wxss**/
+.wetoast {
+  display: none;
+}
+.wetoast_show {
+  display: block;
+}
+.wetoast__mask {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+.wetoast__bd {
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  z-index: 5000;
+  min-width: 8.4em;
+  min-height: 8.4em;
+  max-width: 70%;
+  top: 140px;
+  left: 50%;
+  padding: 15px;
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  background: rgba(40, 40, 40, 0.75);
+  border-radius: 5px;
+  color: #ffffff;
+  word-wrap: break-word;
+  word-break: break-all;
+  align-items: center;
+  justify-content: space-around;
+}
+.wetoast__bd__img {
+  margin-top: 3px;
+}
+.wetoast__bd__img_desc {
+  width: 55px;
+  height: 55px;
+  vertical-align: middle;
+}
+.wetoast__bd__title {
+  margin: 3px 0;
+  font-size: 1.2em;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+export default class WeToast extends wepy.component {
+    data = {
+        __timeout: -1,
+        __reveal: false,
+        __animationData: null,
+        __wetoast: null
+    }
+    props = {}
+    methods = {}
+    events = {
+
+    }
+    onLoad() {
+    }
+
+    //切换显示/隐藏
+    toast(data) {
+        try {
+            if (!data) {
+                this.hide()
+            } else {
+                this.show(data)
+            }
+        } catch (err) {
+            console.error(err)
+            // fail callback
+            data && typeof data.fail === 'function' && data.fail(data)
+        } finally {
+            // complete callback
+            data && typeof data.complete === 'function' && data.complete(data)
+        }
+    }
+
+    //显示
+    show(data) {
+
+        clearTimeout(this.__timeout)
+
+        //display需要先设置为block之后，才能执行动画
+        this.__reveal = true
+        setTimeout(() => {
+            let animation = wx.createAnimation()
+            animation.opacity(1).step()
+            this.__animationData = animation.export()
+            this.__wetoast = data
+            this.$apply()
+        }, 30)
+
+        if (data.duration === 0) {
+            // success callback after toast showed
+            setTimeout(() => {
+                typeof data.success === 'function' && data.success(data)
+            }, 430)
+        } else {
+            this.__timeout = setTimeout(() => {
+                this.toast()
+                // success callback
+                typeof data.success === 'function' && data.success(data)
+            }, (data.duration || 1500) + 400)
+        }
+        this.$apply()
+
+    }
+
+    //隐藏
+    hide() {
+
+        clearTimeout(this.__timeout)
+
+        if (!this.__reveal) { //如果已经在隐藏状态，阻止执行
+            return
+        }
+
+        let animation = wx.createAnimation()
+        animation.opacity(0).step()
+        this.__animationData = animation.export()
+        this.$apply()
+
+
+        setTimeout(() => {
+            this.__wetoast = {}
+            this.__reveal = false
+            this.$apply()
+        }, 400)
+
+    }
+
+
+}
+</script>

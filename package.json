@@ -1,0 +1,25 @@
+{
+    "name": "wepy-wetoast",
+    "version": "1.0.0",
+    "description": "wepy\u001b[D\u001b[D\u001b[D\u001b[D小程序wepy框架toast扩展工具",
+    "main": "wetoast.wpy",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "小程序",
+        "wepy",
+        "toast",
+        "wxapp"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com:lil-Jay/wepy-wetoast.git"
+    },
+    "author": "kid-jay",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lil-Jay/wepy-wetoast/issues"
+    },
+    "homepage": "https://github.com/lil-Jay/wepy-wetoast"
+}
