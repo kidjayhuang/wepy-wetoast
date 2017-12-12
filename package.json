@@ -1,6 +1,6 @@
 {
     "name": "wepy-wetoast",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "description": "wepy\u001b[D\u001b[D\u001b[D\u001b[D小程序wepy框架toast扩展工具",
     "main": "wetoast.wpy",
     "scripts": {
